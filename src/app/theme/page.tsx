@@ -57,19 +57,6 @@ export default function ThemePage() {
 
   useEffect(() => {
     setMounted(true);
-    // Load saved values from localStorage on mount
-    const savedColor = localStorage.getItem('primary-color');
-    const savedBg = localStorage.getItem('background-image');
-    const savedBlur = localStorage.getItem('background-blur');
-    const savedBrightness = localStorage.getItem('background-brightness');
-    const savedSize = localStorage.getItem('background-size');
-
-    if (savedColor) handleColorChange(savedColor, false);
-    if (savedBg) handleImageChange(savedBg, false);
-    if (savedBlur) handleBlurChange([parseInt(savedBlur, 10)], false);
-    if (savedBrightness) handleBrightnessChange([parseInt(savedBrightness, 10)], false);
-    if (savedSize) handleSizeChange(savedSize, false);
-    
   }, []);
 
   const setCssVariable = (property: string, value: string) => {
@@ -122,6 +109,22 @@ export default function ThemePage() {
     document.documentElement.style.removeProperty('--background-image');
     localStorage.removeItem('background-image');
   };
+
+  useEffect(() => {
+    if (mounted) {
+      const savedColor = localStorage.getItem('primary-color');
+      const savedBg = localStorage.getItem('background-image');
+      const savedBlur = localStorage.getItem('background-blur');
+      const savedBrightness = localStorage.getItem('background-brightness');
+      const savedSize = localStorage.getItem('background-size');
+
+      if (savedColor) handleColorChange(savedColor, false);
+      if (savedBg) handleImageChange(savedBg, false);
+      if (savedBlur) handleBlurChange([parseInt(savedBlur, 10)], false);
+      if (savedBrightness) handleBrightnessChange([parseInt(savedBrightness, 10)], false);
+      if (savedSize) handleSizeChange(savedSize, false);
+    }
+  }, [mounted]);
 
   if (!mounted) return null; // avoid hydration mismatch
 
