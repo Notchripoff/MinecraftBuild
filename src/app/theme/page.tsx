@@ -7,17 +7,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Check, Palette, Image as ImageIcon, X, Droplets, Sun } from 'lucide-react';
+import { Check, Palette, Image as ImageIcon, X, Droplets, Sun, Monitor } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const themes = [
-  { name: 'Light', value: 'light' },
-  { name: 'Dark', value: 'dark' },
-  { name: 'Crimson', value: 'theme-crimson' },
-  { name: 'Forest', value: 'theme-forest' },
+  { name: 'System', value: 'system', icon: Monitor },
+  { name: 'Light', value: 'light', icon: Sun },
+  { name: 'Dark', value: 'dark', icon: Palette },
+  { name: 'Crimson', value: 'theme-crimson', icon: Palette },
+  { name: 'Forest', value: 'theme-forest', icon: Palette },
 ];
 
 function hexToHsl(hex: string): string {
@@ -57,6 +58,18 @@ export default function ThemePage() {
 
   useEffect(() => {
     setMounted(true);
+
+    const savedColor = localStorage.getItem('primary-color');
+    const savedBg = localStorage.getItem('background-image');
+    const savedBlur = localStorage.getItem('background-blur');
+    const savedBrightness = localStorage.getItem('background-brightness');
+    const savedSize = localStorage.getItem('background-size');
+
+    if (savedColor) handleColorChange(savedColor, false);
+    if (savedBg) handleImageChange(savedBg, false);
+    if (savedBlur) handleBlurChange([parseInt(savedBlur, 10)], false);
+    if (savedBrightness) handleBrightnessChange([parseInt(savedBrightness, 10)], false);
+    if (savedSize) handleSizeChange(savedSize, false);
   }, []);
 
   const setCssVariable = (property: string, value: string) => {
@@ -81,6 +94,10 @@ export default function ThemePage() {
         handleImageChange(result, save);
       };
       reader.readAsDataURL(fileOrUrl);
+    } else {
+       setBackgroundImage(null);
+       document.documentElement.style.removeProperty('--background-image');
+       if(save) localStorage.removeItem('background-image');
     }
   };
 
@@ -105,26 +122,8 @@ export default function ThemePage() {
   };
 
   const clearBackgroundImage = () => {
-    setBackgroundImage(null);
-    document.documentElement.style.removeProperty('--background-image');
-    localStorage.removeItem('background-image');
+    handleImageChange(null);
   };
-
-  useEffect(() => {
-    if (mounted) {
-      const savedColor = localStorage.getItem('primary-color');
-      const savedBg = localStorage.getItem('background-image');
-      const savedBlur = localStorage.getItem('background-blur');
-      const savedBrightness = localStorage.getItem('background-brightness');
-      const savedSize = localStorage.getItem('background-size');
-
-      if (savedColor) handleColorChange(savedColor, false);
-      if (savedBg) handleImageChange(savedBg, false);
-      if (savedBlur) handleBlurChange([parseInt(savedBlur, 10)], false);
-      if (savedBrightness) handleBrightnessChange([parseInt(savedBrightness, 10)], false);
-      if (savedSize) handleSizeChange(savedSize, false);
-    }
-  }, [mounted]);
 
   if (!mounted) return null; // avoid hydration mismatch
 
@@ -146,19 +145,20 @@ export default function ThemePage() {
           
           <div>
             <Label className="text-sm font-medium">Base Theme</Label>
-            <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               {themes.map((t) => (
                 <Button
                   key={t.value}
                   variant="outline"
                   onClick={() => setTheme(t.value)}
                   className={cn(
-                    'h-12 justify-between transition-all duration-300 transform hover:scale-105',
+                    'h-12 justify-start gap-3 px-4 transition-all duration-300 transform hover:scale-105',
                     theme === t.value && 'ring-2 ring-primary'
                   )}
                 >
-                  {t.name}
-                  {theme === t.value && <Check className="h-5 w-5 text-primary" />}
+                  <t.icon className="w-5 h-5" />
+                  <span>{t.name}</span>
+                  {theme === t.value && <Check className="h-5 w-5 text-primary ml-auto" />}
                 </Button>
               ))}
             </div>

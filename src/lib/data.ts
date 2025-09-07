@@ -12,7 +12,7 @@ let builds: Build[] = [
       'A magnificent castle floating among the clouds, built with quartz and prismarine. It features tall spires, a grand central keep, and cascading waterfalls that fall into the void. The interior is lavishly decorated with gold blocks, chandeliers, and intricate stained glass windows depicting celestial scenes.',
     summary:
       'A magnificent castle floating among the clouds, built with quartz and prismarine, featuring tall spires and waterfalls.',
-    imageUrl: 'https://picsum.photos/seed/minecraft-castle/1280/720',
+    imageUrl: 'https://placehold.co/1280x720/000000/FFFFFF/png?text=Minecraft+Castle',
     tags: ['castle', 'fantasy', 'survival-friendly', 'mega-build'],
     status: 'approved',
     createdAt: new Date('2023-10-26T10:00:00Z'),
@@ -30,7 +30,7 @@ let builds: Build[] = [
       "Carved deep into a mountain, this dwarven city is a marvel of underground engineering. It features a grand hall with massive pillars, a bustling marketplace, a functional minecart system, and lava forges that light up the stone halls. The city is self-sufficient with underground farms and reservoirs.",
     summary:
       'An underground dwarven city carved into a mountain, featuring a grand hall, marketplace, and minecart system.',
-    imageUrl: 'https://picsum.photos/seed/minecraft-dwarven-city/1280/720',
+    imageUrl: 'https://placehold.co/1280x720/331a00/FFFFFF/png?text=Dwarven+City',
     tags: ['underground', 'dwarven', 'city', 'engineering'],
     status: 'approved',
     createdAt: new Date('2023-10-25T14:30:00Z'),
@@ -45,7 +45,7 @@ let builds: Build[] = [
       'A sleek and modern villa with clean lines and an open-plan design. Built with concrete, glass, and wood planks, it boasts a swimming pool, a rooftop terrace, and large windows offering panoramic views of the surrounding landscape. The interior is decorated with minimalist furniture and smart redstone lighting.',
     summary:
       'A sleek modern villa with a minimalist design, swimming pool, and rooftop terrace.',
-    imageUrl: 'https://picsum.photos/seed/minecraft-modern-villa/1280/720',
+    imageUrl: 'https://placehold.co/1280x720/ffffff/000000/png?text=Modern+Villa',
     tags: ['modern', 'villa', 'architecture', 'redstone'],
     status: 'approved',
     createdAt: new Date('2023-10-24T18:00:00Z'),
@@ -59,7 +59,7 @@ let builds: Build[] = [
     description:
       'A massive steampunk airship designed for exploration. It has a detailed engine room with moving parts, a luxurious captain\'s quarters, and a deck with cannons. The balloon is made of striped wool, and the ship is adorned with copper and brass details.',
     summary: 'A detailed steampunk airship with a full interior and intricate engine room.',
-    imageUrl: 'https://picsum.photos/seed/minecraft-airship/1280/720',
+    imageUrl: 'https://placehold.co/1280x720/b38600/FFFFFF/png?text=Steampunk+Airship',
     tags: ['steampunk', 'airship', 'vehicle'],
     status: 'pending',
     createdAt: new Date('2023-10-27T09:00:00Z'),
