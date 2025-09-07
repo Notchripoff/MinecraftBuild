@@ -7,6 +7,14 @@ import { summarizeBuildDescription } from '@/ai/flows/summarize-build-descriptio
 import { generateBuildTags } from '@/ai/flows/generate-build-tags';
 import { v2 as cloudinary } from 'cloudinary';
 
+// Configure Cloudinary at the module level to ensure it's loaded for the server action.
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
 const formSchema = z.object({
   name: z.string(),
   builderName: z.string(),
@@ -21,13 +29,6 @@ async function fileToDataUri(file: File): Promise<string> {
 }
 
 async function uploadToCloudinary(dataUri: string): Promise<string> {
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-    secure: true,
-  });
-
   try {
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: 'vava-showcase',
