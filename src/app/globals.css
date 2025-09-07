@@ -24,6 +24,13 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 207 70% 53%;
     --radius: 0.5rem;
+
+    /* Custom background variables */
+    --background-image: none;
+    --background-blur: 0px;
+    --background-brightness: 100%;
+    --background-size: cover;
+    --background-repeat: no-repeat;
   }
 
   .dark {
@@ -100,5 +107,28 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: var(--background-image);
+    background-size: var(--background-size);
+    background-repeat: var(--background-repeat);
+    background-position: center;
+    background-attachment: fixed;
   }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(var(--background-blur)) brightness(var(--background-brightness));
+    -webkit-backdrop-filter: blur(var(--background-blur)) brightness(var(--background-brightness));
+    z-index: -1;
+  }
+}
+
+@layer utilities {
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
 }

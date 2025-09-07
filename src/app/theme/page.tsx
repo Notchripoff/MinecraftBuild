@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Check, Palette, Image as ImageIcon, X } from 'lucide-react';
+import { Check, Palette, Image as ImageIcon, X, Droplets, Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const themes = [
   { name: 'Light', value: 'light' },
@@ -43,45 +45,75 @@ function hexToHsl(hex: string): string {
 
 export default function ThemePage() {
   const { theme, setTheme } = useTheme();
-  const [primaryColor, setPrimaryColor] = useState('#000000');
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  
+  // State for customizations
+  const [primaryColor, setPrimaryColor] = useState('#1c7ed6');
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [backgroundBlur, setBackgroundBlur] = useState(0);
+  const [backgroundBrightness, setBackgroundBrightness] = useState(100);
+  const [backgroundSize, setBackgroundSize] = useState('cover');
 
-  // Load saved values from localStorage on mount
   useEffect(() => {
     setMounted(true);
+    // Load saved values from localStorage on mount
     const savedColor = localStorage.getItem('primary-color');
     const savedBg = localStorage.getItem('background-image');
+    const savedBlur = localStorage.getItem('background-blur');
+    const savedBrightness = localStorage.getItem('background-brightness');
+    const savedSize = localStorage.getItem('background-size');
 
-    if (savedColor) {
-      setPrimaryColor(savedColor);
-      document.documentElement.style.setProperty('--primary', hexToHsl(savedColor));
-    }
-    if (savedBg) {
-      setBackgroundImage(savedBg);
-      document.documentElement.style.setProperty('--background-image', `url(${savedBg})`);
-    }
+    if (savedColor) handleColorChange(savedColor, false);
+    if (savedBg) handleImageChange(savedBg, false);
+    if (savedBlur) handleBlurChange([parseInt(savedBlur, 10)], false);
+    if (savedBrightness) handleBrightnessChange([parseInt(savedBrightness, 10)], false);
+    if (savedSize) handleSizeChange(savedSize, false);
+    
   }, []);
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
+  const setCssVariable = (property: string, value: string) => {
+    document.documentElement.style.setProperty(property, value);
+  };
+  
+  const handleColorChange = (newColor: string, save = true) => {
     setPrimaryColor(newColor);
-    document.documentElement.style.setProperty('--primary', hexToHsl(newColor));
-    localStorage.setItem('primary-color', newColor);
+    setCssVariable('--primary', hexToHsl(newColor));
+    if (save) localStorage.setItem('primary-color', newColor);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+  const handleImageChange = (fileOrUrl: File | string | null, save = true) => {
+    if (typeof fileOrUrl === 'string') {
+      setBackgroundImage(fileOrUrl);
+      setCssVariable('--background-image', `url(${fileOrUrl})`);
+      if (save) localStorage.setItem('background-image', fileOrUrl);
+    } else if (fileOrUrl) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setBackgroundImage(result);
-        document.documentElement.style.setProperty('--background-image', `url(${result})`);
-        localStorage.setItem('background-image', result);
+        handleImageChange(result, save);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileOrUrl);
     }
+  };
+
+  const handleBlurChange = (value: number[], save = true) => {
+    const [blurValue] = value;
+    setBackgroundBlur(blurValue);
+    setCssVariable('--background-blur', `${blurValue}px`);
+    if (save) localStorage.setItem('background-blur', blurValue.toString());
+  };
+
+_handleBrightnessChange = (value: number[], save = true) => {
+    const [brightnessValue] = value;
+    setBackgroundBrightness(brightnessValue);
+    setCssVariable('--background-brightness', `${brightnessValue}%`);
+    if (save) localStorage.setItem('background-brightness', brightnessValue.toString());
+  };
+
+  const handleSizeChange = (value: string, save = true) => {
+    setBackgroundSize(value);
+    setCssVariable('--background-size', value);
+    if (save) localStorage.setItem('background-size', value);
   };
 
   const clearBackgroundImage = () => {
@@ -93,16 +125,23 @@ export default function ThemePage() {
   if (!mounted) return null; // avoid hydration mismatch
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto space-y-8">
+       <div className="text-center">
+        <h1 className="text-4xl font-bold font-headline tracking-tight">Customize Your Experience</h1>
+        <p className="mt-2 text-lg text-muted-foreground">
+          Personalize the look and feel of the application to match your style.
+        </p>
+      </div>
+
       <Card className="animate-fade-in-up">
         <CardHeader>
-          <CardTitle>Customize Theme</CardTitle>
+          <CardTitle>Theme Settings</CardTitle>
+          <CardDescription>Select a base theme and customize the primary color.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           
-          {/* Theme selector */}
           <div>
-            <Label className="text-muted-foreground">Select a base theme</Label>
+            <Label className="text-sm font-medium">Base Theme</Label>
             <div className="grid grid-cols-2 gap-4 mt-2">
               {themes.map((t) => (
                 <Button
@@ -123,59 +162,106 @@ export default function ThemePage() {
 
           <Separator />
 
-          {/* Color picker */}
           <div className="space-y-4">
-            <Label htmlFor="color-picker" className="flex items-center gap-2 text-muted-foreground">
+            <Label htmlFor="color-picker" className="flex items-center gap-2 font-medium">
               <Palette className="w-5 h-5" />
-              Custom Primary Color
+              Primary Color
             </Label>
             <div className="flex items-center gap-4">
               <Input
                 id="color-picker"
                 type="color"
                 value={primaryColor}
-                onChange={handleColorChange}
-                className="h-12 w-20 p-1"
+                onChange={(e) => handleColorChange(e.target.value)}
+                className="h-12 w-20 p-1 cursor-pointer"
               />
-              <span className="font-mono text-sm bg-muted px-3 py-2 rounded-md">
-                {primaryColor.toUpperCase()}
-              </span>
+              <div className="w-full h-12 rounded-md border" style={{ backgroundColor: primaryColor }} />
             </div>
           </div>
 
-          <Separator />
-
-          {/* Background image picker */}
-          <div className="space-y-4">
-            <Label htmlFor="background-picker" className="flex items-center gap-2 text-muted-foreground">
-              <ImageIcon className="w-5 h-5" />
-              Custom Background
-            </Label>
-            <div className="flex items-center gap-4">
-              <Input
-                id="background-picker"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 
-                           file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground 
-                           hover:file:bg-primary/90"
-              />
-              {backgroundImage && (
-                <>
-                  <img
-                    src={backgroundImage}
-                    alt="Preview"
-                    className="h-12 w-12 rounded-md object-cover border"
-                  />
+        </CardContent>
+      </Card>
+      
+      <Card className="animate-fade-in-up animation-delay-200">
+        <CardHeader>
+          <CardTitle>Background Settings</CardTitle>
+          <CardDescription>Upload a custom background and adjust its appearance.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8">
+            <div className="space-y-4">
+              <Label htmlFor="background-picker" className="flex items-center gap-2 font-medium">
+                <ImageIcon className="w-5 h-5" />
+                Custom Background Image
+              </Label>
+              <div className="flex items-center gap-4">
+                <Input
+                  id="background-picker"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
+                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 
+                            file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground 
+                            hover:file:bg-primary/90"
+                />
+                {backgroundImage && (
                   <Button variant="ghost" size="icon" onClick={clearBackgroundImage} aria-label="Clear background">
                     <X className="w-5 h-5" />
                   </Button>
-                </>
+                )}
+              </div>
+              {backgroundImage && (
+                <div className="relative aspect-video w-full overflow-hidden rounded-md border">
+                    <img
+                      src={backgroundImage}
+                      alt="Background Preview"
+                      className="w-full h-full object-cover"
+                    />
+                </div>
               )}
             </div>
-          </div>
 
+            <div className="space-y-4">
+              <Label className="flex items-center gap-2 font-medium">
+                <Droplets className="w-5 h-5" />
+                Background Blur ({backgroundBlur}px)
+              </Label>
+              <Slider
+                value={[backgroundBlur]}
+                onValueChange={handleBlurChange}
+                max={40}
+                step={1}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <Label className="flex items-center gap-2 font-medium">
+                <Sun className="w-5 h-5" />
+                Background Brightness ({backgroundBrightness}%)
+              </Label>
+              <Slider
+                value={[backgroundBrightness]}
+                onValueChange={handleBrightnessChange}
+                min={20}
+                max={100}
+                step={5}
+              />
+            </div>
+
+             <div className="space-y-4">
+              <Label className="flex items-center gap-2 font-medium">
+                Background Size
+              </Label>
+               <Select value={backgroundSize} onValueChange={handleSizeChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cover">Cover</SelectItem>
+                    <SelectItem value="contain">Contain</SelectItem>
+                    <SelectItem value="auto">Auto</SelectItem>
+                  </SelectContent>
+                </Select>
+            </div>
         </CardContent>
       </Card>
     </div>

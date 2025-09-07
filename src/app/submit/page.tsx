@@ -3,13 +3,15 @@ import SubmitForm from './SubmitForm';
 export default function SubmitPage() {
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 animate-fade-in-up">
         <h1 className="text-4xl font-bold font-headline tracking-tight">Submit Your Build</h1>
         <p className="mt-2 text-lg text-muted-foreground">
           Share your masterpiece with the K12 VAVA community!
         </p>
       </div>
-      <SubmitForm />
+      <div className="animate-fade-in-up animation-delay-200">
+        <SubmitForm />
+      </div>
     </div>
   );
 }

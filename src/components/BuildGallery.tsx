@@ -38,9 +38,12 @@ export default function BuildGallery({ builds }: { builds: Build[] }) {
       </div>
       {filteredBuilds.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBuilds.map((build) => (
+          {filteredBuilds.map((build, i) => (
             <Link key={build.id} href={`/build/${build.id}`} passHref>
-              <Card className="h-full flex flex-col group overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <Card 
+                className="h-full flex flex-col group overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fade-in-up"
+                style={{ animationDelay: `${i * 100}ms`}}
+              >
                 <CardHeader className="p-0">
                   <div className="aspect-[16/9] relative w-full overflow-hidden">
                     <Image
@@ -48,7 +51,7 @@ export default function BuildGallery({ builds }: { builds: Build[] }) {
                       alt={`Image of ${build.name}`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
                       data-ai-hint="minecraft build"
                     />
                   </div>
@@ -72,7 +75,7 @@ export default function BuildGallery({ builds }: { builds: Build[] }) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-card rounded-lg">
+        <div className="text-center py-12 bg-card rounded-lg animate-fade-in-up">
           <h3 className="text-xl font-semibold">No builds found</h3>
           <p className="text-muted-foreground mt-2">
             Try adjusting your search or check back later!

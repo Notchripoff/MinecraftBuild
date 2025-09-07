@@ -23,7 +23,7 @@ export default async function BuildPage({ params }: BuildPageProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden animate-fade-in-up">
         <div className="aspect-[16/9] relative w-full">
           <Image
             src={build.imageUrl}
@@ -66,7 +66,9 @@ export default async function BuildPage({ params }: BuildPageProps) {
         </div>
       </Card>
 
-      <BuildInteractions build={build} />
+      <div className="animate-fade-in-up animation-delay-200">
+        <BuildInteractions build={build} />
+      </div>
     </div>
   );
 }
