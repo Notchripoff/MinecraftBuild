@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useRef, useState, useTransition, useEffect } from 'react';
 import type { Build, Comment } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare } from 'lucide-react';
@@ -24,6 +24,10 @@ export default function BuildInteractions({ build }: { build: Build }) {
   const [isLiking, startLikeTransition] = useTransition();
 
   const [optimisticComments, setOptimisticComments] = useState(build.comments);
+
+  useEffect(() => {
+    setOptimisticLikes(build.likes);
+  }, [build.likes]);
 
   const handleLike = () => {
     if (hasLiked) return;

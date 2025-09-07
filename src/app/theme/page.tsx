@@ -167,34 +167,32 @@ export default function ThemePage() {
               background-position: center;
               background-attachment: fixed;
             }
-            :root, .dark, .theme-crimson, .theme-forest {
+            body > .${theme} {
               --background: transparent;
             }
-            .bg-card, .bg-popover, .bg-background {
-               background-color: hsla(var(--background-opaque, 0 0% 100% / 0.8));
+            .${theme} .bg-card, .${theme} .bg-popover, .${theme} .bg-background {
+               background-color: hsla(var(--card-bg-opaque, 0 0% 100% / 0.8));
                backdrop-filter: blur(8px);
             }
-            .bg-muted {
-               background-color: hsla(var(--muted-opaque, 210 40% 96.1% / 0.8));
+            .${theme} .bg-muted {
+               background-color: hsla(var(--muted-bg-opaque, 210 40% 96.1% / 0.8));
             }
 
-            .dark .bg-card, .dark .bg-popover, .dark .bg-background {
-               background-color: hsla(var(--background-opaque, 222.2 84% 4.9% / 0.8));
+            .light {
+              --card-bg-opaque: 0 0% 100% / 0.8;
+              --muted-bg-opaque: 210 40% 96.1% / 0.8;
             }
-            .dark .bg-muted {
-               background-color: hsla(var(--muted-opaque, 217.2 32.6% 17.5% / 0.8));
+            .dark {
+              --card-bg-opaque: 222.2 84% 4.9% / 0.8;
+              --muted-bg-opaque: 217.2 32.6% 17.5% / 0.8;
             }
-            .theme-crimson .bg-card, .theme-crimson .bg-popover, .theme-crimson .bg-background {
-              background-color: hsla(var(--background-opaque, 0 0% 12% / 0.8));
+            .theme-crimson {
+              --card-bg-opaque: 0 0% 12% / 0.8;
+              --muted-bg-opaque: 0 0% 20% / 0.8;
             }
-            .theme-crimson .bg-muted {
-              background-color: hsla(var(--muted-opaque, 0 0% 20% / 0.8));
-            }
-            .theme-forest .bg-card, .theme-forest .bg-popover, .theme-forest .bg-background {
-              background-color: hsla(var(--background-opaque, 210 30% 20% / 0.8));
-            }
-            .theme-forest .bg-muted {
-              background-color: hsla(var(--muted-opaque, 200 40% 25% / 0.8));
+            .theme-forest {
+              --card-bg-opaque: 210 30% 20% / 0.8;
+              --muted-bg-opaque: 200 40% 25% / 0.8;
             }
           `}
         </style>
