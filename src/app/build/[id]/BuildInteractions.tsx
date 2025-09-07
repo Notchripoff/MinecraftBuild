@@ -16,19 +16,24 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function BuildInteractions({ build }: { build: Build }) {
   const { toast } = useToast();
-  const [isLiking, startLikeTransition] = useTransition();
   const [isCommenting, startCommentTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [optimisticLikes, setOptimisticLikes] = useState(build.likes);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [isLiking, startLikeTransition] = useTransition();
+
   const [optimisticComments, setOptimisticComments] = useState(build.comments);
 
   const handleLike = () => {
+    if (hasLiked) return;
     startLikeTransition(async () => {
+      setHasLiked(true);
       setOptimisticLikes((p) => p + 1);
       try {
         await likeBuild(build.id);
       } catch (error) {
+        setHasLiked(false);
         setOptimisticLikes((p) => p - 1);
         toast({
           title: 'Error',
@@ -85,15 +90,13 @@ export default function BuildInteractions({ build }: { build: Build }) {
               variant="outline"
               size="lg"
               onClick={handleLike}
-              disabled={isLiking}
+              disabled={isLiking || hasLiked}
               className="group"
             >
               <Heart
                 className={cn(
                   'mr-2 h-5 w-5 transition-all',
-                  optimisticLikes > build.likes
-                    ? 'text-red-500 fill-red-500'
-                    : 'group-hover:text-red-500 group-hover:fill-red-500'
+                  hasLiked ? 'text-red-500 fill-red-500' : 'group-hover:text-red-500 group-hover:fill-red-500'
                 )}
               />
               <span className="font-semibold">{optimisticLikes}</span>
