@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import type { Build } from './types';
+import type { Build, Comment } from './types';
 
 let builds: Build[] = [
   {
@@ -16,6 +16,11 @@ let builds: Build[] = [
     tags: ['castle', 'fantasy', 'survival-friendly', 'mega-build'],
     status: 'approved',
     createdAt: new Date('2023-10-26T10:00:00Z'),
+    likes: 128,
+    comments: [
+      { id: 'c1', author: 'BuilderBoi', text: 'This is absolutely insane! The detail is incredible.', createdAt: new Date('2023-10-26T11:00:00Z') },
+      { id: 'c2', author: 'CraftyGal', text: 'Wow, I wish I could build like that!', createdAt: new Date('2023-10-26T12:30:00Z') },
+    ],
   },
   {
     id: '2',
@@ -29,6 +34,8 @@ let builds: Build[] = [
     tags: ['underground', 'dwarven', 'city', 'engineering'],
     status: 'approved',
     createdAt: new Date('2023-10-25T14:30:00Z'),
+    likes: 256,
+    comments: [],
   },
   {
     id: '3',
@@ -42,6 +49,8 @@ let builds: Build[] = [
     tags: ['modern', 'villa', 'architecture', 'redstone'],
     status: 'approved',
     createdAt: new Date('2023-10-24T18:00:00Z'),
+    likes: 98,
+    comments: [],
   },
     {
     id: '4',
@@ -54,6 +63,8 @@ let builds: Build[] = [
     tags: ['steampunk', 'airship', 'vehicle'],
     status: 'pending',
     createdAt: new Date('2023-10-27T09:00:00Z'),
+    likes: 45,
+    comments: [],
   },
 ];
 
@@ -69,15 +80,18 @@ export async function getBuildById(id: string): Promise<Build | undefined> {
   return builds.find((build) => build.id === id);
 }
 
-export async function addBuild(build: Omit<Build, 'id' | 'createdAt'>): Promise<Build> {
+export async function addBuild(build: Omit<Build, 'id' | 'createdAt' | 'likes' | 'comments'>): Promise<Build> {
   await delay(200);
   const newBuild: Build = {
     ...build,
     id: Date.now().toString(),
     createdAt: new Date(),
+    likes: 0,
+    comments: [],
   };
   builds.unshift(newBuild);
   revalidatePath('/');
+  revalidatePath('/submit');
   return newBuild;
 }
 
@@ -91,9 +105,35 @@ export async function updateBuild(
     return null;
   }
   builds[buildIndex] = { ...builds[buildIndex], ...updates };
-  revalidatePath('/');
   revalidatePath(`/build/${id}`);
   return builds[buildIndex];
+}
+
+export async function addLike(buildId: string): Promise<Build | null> {
+  await delay(50);
+  const buildIndex = builds.findIndex((build) => build.id === buildId);
+  if (buildIndex === -1) return null;
+
+  builds[buildIndex].likes++;
+  revalidatePath(`/build/${buildId}`);
+  return builds[buildIndex];
+}
+
+export async function addComment(buildId: string, author: string, text: string): Promise<Comment | null> {
+  await delay(100);
+  const buildIndex = builds.findIndex((build) => build.id === buildId);
+  if (buildIndex === -1) return null;
+
+  const newComment: Comment = {
+    id: `c${Date.now()}`,
+    author,
+    text,
+    createdAt: new Date(),
+  };
+
+  builds[buildIndex].comments.unshift(newComment);
+  revalidatePath(`/build/${buildId}`);
+  return newComment;
 }
 
 export async function deleteBuild(id: string): Promise<boolean> {
@@ -103,7 +143,6 @@ export async function deleteBuild(id: string): Promise<boolean> {
   const success = builds.length < initialLength;
   if(success) {
     revalidatePath('/');
-    revalidatePath(`/build/${id}`);
   }
   return success;
 }

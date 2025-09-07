@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
+import BuildInteractions from './BuildInteractions';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
 
 type BuildPageProps = {
   params: {
@@ -19,8 +22,8 @@ export default async function BuildPage({ params }: BuildPageProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-4xl mx-auto space-y-8">
+      <Card className="overflow-hidden">
         <div className="aspect-[16/9] relative w-full">
           <Image
             src={build.imageUrl}
@@ -33,7 +36,7 @@ export default async function BuildPage({ params }: BuildPageProps) {
         </div>
         <div className="p-6 md:p-8 space-y-6">
           <h1 className="text-3xl md:text-4xl font-bold font-headline">{build.name}</h1>
-          
+
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
@@ -44,7 +47,7 @@ export default async function BuildPage({ params }: BuildPageProps) {
               <span>{format(build.createdAt, 'MMMM d, yyyy')}</span>
             </div>
           </div>
-          
+
           <div>
             <h2 className="text-xl font-semibold mb-2 font-headline">About this build</h2>
             <p className="text-foreground/80 whitespace-pre-wrap">{build.description}</p>
@@ -61,7 +64,9 @@ export default async function BuildPage({ params }: BuildPageProps) {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
+
+      <BuildInteractions build={build} />
     </div>
   );
 }

@@ -1,3 +1,10 @@
+export interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  createdAt: Date;
+}
+
 export interface Build {
   id: string;
   name: string;
@@ -8,4 +15,6 @@ export interface Build {
   tags: string[];
   status: 'pending' | 'approved';
   createdAt: Date;
+  likes: number;
+  comments: Comment[];
 }

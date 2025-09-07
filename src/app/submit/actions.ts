@@ -5,6 +5,7 @@ import { addBuild } from '@/lib/data';
 import { revalidatePath } from 'next/cache';
 import { summarizeBuildDescription } from '@/ai/flows/summarize-build-description';
 import { generateBuildTags } from '@/ai/flows/generate-build-tags';
+import { redirect } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string(),
