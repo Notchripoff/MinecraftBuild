@@ -32,8 +32,8 @@ const Header = () => {
                 Theme
               </NavLink>
             </nav>
-            <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Link href="/submit">Submit Build</Link>
+            <Button asChild>
+              <Link href="/submit" className="bg-accent hover:bg-accent/90 text-accent-foreground">Submit Build</Link>
             </Button>
           </div>
         </div>
