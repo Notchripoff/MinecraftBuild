@@ -10,6 +10,9 @@ import { v2 as cloudinary } from 'cloudinary';
 // Configure Cloudinary. This will automatically use the environment variables
 // `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET`.
 cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
 
@@ -65,12 +68,6 @@ export async function submitBuild(formData: FormData) {
   }
 
   const { name, builderName, description, image } = parsed.data;
-
-  // We add a check here to ensure Cloudinary config is set, which it should be from the env vars.
-  // This provides a clearer error message if the environment variables are not set.
-  if (!cloudinary.config().cloud_name || !cloudinary.config().api_key || !cloudinary.config().api_secret) {
-    throw new Error('Cloudinary environment variables are not configured correctly.');
-  }
   
   const [imageUrl, imageDataUri] = await Promise.all([
     uploadToCloudinary(image),
