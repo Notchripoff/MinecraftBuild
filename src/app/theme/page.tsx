@@ -41,14 +41,15 @@ function hexToHsl(hex: string): string {
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 }
 
-
 export default function ThemePage() {
   const { theme, setTheme } = useTheme();
   const [primaryColor, setPrimaryColor] = useState('#000000');
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
-  
+  const [mounted, setMounted] = useState(false);
+
   // Load saved values from localStorage on mount
   useEffect(() => {
+    setMounted(true);
     const savedColor = localStorage.getItem('primary-color');
     const savedBg = localStorage.getItem('background-image');
 
@@ -58,6 +59,7 @@ export default function ThemePage() {
     }
     if (savedBg) {
       setBackgroundImage(savedBg);
+      document.documentElement.style.setProperty('--background-image', `url(${savedBg})`);
     }
   }, []);
 
@@ -75,16 +77,20 @@ export default function ThemePage() {
       reader.onloadend = () => {
         const result = reader.result as string;
         setBackgroundImage(result);
+        document.documentElement.style.setProperty('--background-image', `url(${result})`);
         localStorage.setItem('background-image', result);
       };
       reader.readAsDataURL(file);
     }
   };
-  
+
   const clearBackgroundImage = () => {
     setBackgroundImage(null);
+    document.documentElement.style.removeProperty('--background-image');
     localStorage.removeItem('background-image');
-  }
+  };
+
+  if (!mounted) return null; // avoid hydration mismatch
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -93,6 +99,8 @@ export default function ThemePage() {
           <CardTitle>Customize Theme</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          
+          {/* Theme selector */}
           <div>
             <Label className="text-muted-foreground">Select a base theme</Label>
             <div className="grid grid-cols-2 gap-4 mt-2">
@@ -114,9 +122,10 @@ export default function ThemePage() {
           </div>
 
           <Separator />
-          
+
+          {/* Color picker */}
           <div className="space-y-4">
-             <Label htmlFor="color-picker" className="flex items-center gap-2 text-muted-foreground">
+            <Label htmlFor="color-picker" className="flex items-center gap-2 text-muted-foreground">
               <Palette className="w-5 h-5" />
               Custom Primary Color
             </Label>
@@ -128,75 +137,47 @@ export default function ThemePage() {
                 onChange={handleColorChange}
                 className="h-12 w-20 p-1"
               />
-              <span className="font-mono text-sm bg-muted px-3 py-2 rounded-md">{primaryColor.toUpperCase()}</span>
+              <span className="font-mono text-sm bg-muted px-3 py-2 rounded-md">
+                {primaryColor.toUpperCase()}
+              </span>
             </div>
           </div>
 
           <Separator />
-          
+
+          {/* Background image picker */}
           <div className="space-y-4">
             <Label htmlFor="background-picker" className="flex items-center gap-2 text-muted-foreground">
               <ImageIcon className="w-5 h-5" />
               Custom Background
             </Label>
-             <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <Input
                 id="background-picker"
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 
+                           file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground 
+                           hover:file:bg-primary/90"
               />
               {backgroundImage && (
-                <Button variant="ghost" size="icon" onClick={clearBackgroundImage}>
-                  <X className="w-5 h-5" />
-                </Button>
+                <>
+                  <img
+                    src={backgroundImage}
+                    alt="Preview"
+                    className="h-12 w-12 rounded-md object-cover border"
+                  />
+                  <Button variant="ghost" size="icon" onClick={clearBackgroundImage} aria-label="Clear background">
+                    <X className="w-5 h-5" />
+                  </Button>
+                </>
               )}
             </div>
           </div>
 
         </CardContent>
       </Card>
-      {/* This style tag applies the background image */}
-      {backgroundImage && (
-        <style>
-          {`
-            body {
-              background-image: url(${backgroundImage});
-              background-size: cover;
-              background-position: center;
-              background-attachment: fixed;
-            }
-            body > .${theme} {
-              --background: transparent;
-            }
-            .${theme} .bg-card, .${theme} .bg-popover, .${theme} .bg-background {
-               background-color: hsla(var(--card-bg-opaque, 0 0% 100% / 0.8));
-               backdrop-filter: blur(8px);
-            }
-            .${theme} .bg-muted {
-               background-color: hsla(var(--muted-bg-opaque, 210 40% 96.1% / 0.8));
-            }
-
-            .light {
-              --card-bg-opaque: 0 0% 100% / 0.8;
-              --muted-bg-opaque: 210 40% 96.1% / 0.8;
-            }
-            .dark {
-              --card-bg-opaque: 222.2 84% 4.9% / 0.8;
-              --muted-bg-opaque: 217.2 32.6% 17.5% / 0.8;
-            }
-            .theme-crimson {
-              --card-bg-opaque: 0 0% 12% / 0.8;
-              --muted-bg-opaque: 0 0% 20% / 0.8;
-            }
-            .theme-forest {
-              --card-bg-opaque: 210 30% 20% / 0.8;
-              --muted-bg-opaque: 200 40% 25% / 0.8;
-            }
-          `}
-        </style>
-      )}
     </div>
   );
 }
