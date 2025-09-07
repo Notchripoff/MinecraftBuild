@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -49,7 +48,6 @@ export default function ThemePage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   
-  // State for customizations
   const [primaryColor, setPrimaryColor] = useState('#1c7ed6');
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [backgroundBlur, setBackgroundBlur] = useState(0);
@@ -125,7 +123,7 @@ export default function ThemePage() {
     handleImageChange(null);
   };
 
-  if (!mounted) return null; // avoid hydration mismatch
+  if (!mounted) return null;
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">

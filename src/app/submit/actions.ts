@@ -7,7 +7,6 @@ import { summarizeBuildDescription } from '@/ai/flows/summarize-build-descriptio
 import { generateBuildTags } from '@/ai/flows/generate-build-tags';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary at the module level to ensure it's loaded for the server action.
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,

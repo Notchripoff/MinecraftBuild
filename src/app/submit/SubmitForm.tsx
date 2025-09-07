@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { submitBuild } from './actions';
 import { Upload, X, ImagePlus } from 'lucide-react';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const formSchema = z.object({
   name: z.string().min(3, 'Build name must be at least 3 characters.'),

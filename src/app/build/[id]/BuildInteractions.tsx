@@ -25,7 +25,6 @@ export default function BuildInteractions({ build }: { build: Build }) {
 
   const [optimisticComments, setOptimisticComments] = useState(build.comments);
 
-  // When the build data from the server changes, update the optimistic likes
   useEffect(() => {
     setOptimisticLikes(build.likes);
   }, [build.likes]);
@@ -38,7 +37,6 @@ export default function BuildInteractions({ build }: { build: Build }) {
       try {
         await likeBuild(build.id);
       } catch (error) {
-        // Revert optimistic update on error
         setHasLiked(false);
         setOptimisticLikes((p) => p - 1);
         toast({
