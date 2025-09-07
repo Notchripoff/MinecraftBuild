@@ -38,6 +38,7 @@ async function uploadToCloudinary(file: File): Promise<string> {
             },
             (error, result) => {
                 if (error) {
+                    console.error('Cloudinary upload error:', error);
                     reject(new Error('Failed to upload image to Cloudinary.'));
                 } else if (result) {
                     resolve(result.secure_url);
@@ -64,6 +65,11 @@ export async function submitBuild(formData: FormData) {
   }
 
   const { name, builderName, description, image } = parsed.data;
+
+  // Re-check config here to ensure it's loaded
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error('Cloudinary environment variables are not configured.');
+  }
 
   const [imageUrl, imageDataUri] = await Promise.all([
     uploadToCloudinary(image),
