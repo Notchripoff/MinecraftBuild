@@ -7,12 +7,10 @@ import { summarizeBuildDescription } from '@/ai/flows/summarize-build-descriptio
 import { generateBuildTags } from '@/ai/flows/generate-build-tags';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary at the module level
-// This ensures that the configuration is set when the module is loaded.
+// Configure Cloudinary. This will automatically use the environment variables
+// `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET`.
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 const formSchema = z.object({
@@ -54,12 +52,6 @@ async function uploadToCloudinary(file: File): Promise<string> {
 }
 
 export async function submitBuild(formData: FormData) {
-  // Check if the credentials are set. If not, the config above would have failed silently
-  // but the upload will fail.
-  if (!process.env.CLOUDINARY_API_KEY) {
-      throw new Error('Cloudinary environment variables are not configured correctly.');
-  }
-
   const parsed = formSchema.safeParse({
     name: formData.get('name'),
     builderName: formData.get('builderName'),
@@ -73,6 +65,12 @@ export async function submitBuild(formData: FormData) {
   }
 
   const { name, builderName, description, image } = parsed.data;
+
+  // We add a check here to ensure Cloudinary config is set, which it should be from the env vars.
+  // This provides a clearer error message if the environment variables are not set.
+  if (!cloudinary.config().cloud_name || !cloudinary.config().api_key || !cloudinary.config().api_secret) {
+    throw new Error('Cloudinary environment variables are not configured correctly.');
+  }
   
   const [imageUrl, imageDataUri] = await Promise.all([
     uploadToCloudinary(image),
