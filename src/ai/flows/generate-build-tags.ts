@@ -1,13 +1,5 @@
 'use server';
 
-/**
- * @fileOverview Generates relevant tags for a Minecraft build based on its description and images.
- *
- * - generateBuildTags - A function that generates tags for a Minecraft build.
- * - GenerateBuildTagsInput - The input type for the generateBuildTags function.
- * - GenerateBuildTagsOutput - The return type for the generateBuildTags function.
- */
-
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 

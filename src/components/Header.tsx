@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from './ui/button';
-import { Box } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Box, Palette } from 'lucide-react';
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Button variant="ghost" asChild>
@@ -22,12 +21,16 @@ const Header = () => {
           <Link href="/" className="flex items-center gap-2 group">
             <Box className="w-8 h-8 text-primary group-hover:rotate-12 transition-transform duration-300" />
             <span className="text-xl font-bold font-headline text-foreground">
-              BlockVerse Showcase
+              K12 VAVA Showcase
             </span>
           </Link>
           <div className="flex items-center gap-2">
             <nav className="hidden md:flex items-center gap-2">
               <NavLink href="/">Gallery</NavLink>
+              <NavLink href="/theme">
+                <Palette className="w-4 h-4 mr-2" />
+                Theme
+              </NavLink>
             </nav>
             <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="/submit">Submit Build</Link>

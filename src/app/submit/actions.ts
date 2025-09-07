@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { addBuild } from '@/lib/data';
+import { revalidatePath } from 'next/cache';
 import { summarizeBuildDescription } from '@/ai/flows/summarize-build-description';
 import { generateBuildTags } from '@/ai/flows/generate-build-tags';
 
@@ -26,13 +27,8 @@ export async function submitBuild(formData: FormData) {
 
   const { name, builderName, description, imageDataUri } = parsed.data;
 
-  // Since image upload is not directly implemented, we'll use the data URI for AI processing
-  // and a placeholder for the stored URL. In a real app, you would upload the image to a
-  // storage service (like Firebase Storage) and get a public URL.
-  // For this example, we'll use the data URI itself, which is inefficient but functional.
   const imageUrl = imageDataUri; 
 
-  // Use GenAI to generate a summary and tags
   const [summaryResult, tagsResult] = await Promise.all([
     summarizeBuildDescription({ buildDescription: description }),
     generateBuildTags({ description, imageDataUri }),
@@ -50,7 +46,4 @@ export async function submitBuild(formData: FormData) {
     tags,
     status: 'approved',
   });
-
-  // No need to redirect from here, the client-side router will handle it after the promise resolves.
-  // This allows us to show a success toast.
 }

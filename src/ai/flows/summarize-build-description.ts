@@ -1,13 +1,5 @@
 'use server';
 
-/**
- * @fileOverview Summarizes a lengthy build description for a concise preview.
- *
- * - summarizeBuildDescription - A function that summarizes the build description.
- * - SummarizeBuildDescriptionInput - The input type for the summarizeBuildDescription function.
- * - SummarizeBuildDescriptionOutput - The return type for the summarizeBuildDescription function.
- */
-
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
