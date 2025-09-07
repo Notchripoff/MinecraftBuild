@@ -14,15 +14,6 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-functionOptimistically(
-  (state, newItems) => [
-    // append new items to existing state
-    ...state,
-    ...newItems
-  ]
-)
-
-
 export default function BuildInteractions({ build }: { build: Build }) {
   const { toast } = useToast();
   const [isLiking, startLikeTransition] = useTransition();
