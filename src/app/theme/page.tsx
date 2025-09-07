@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -103,7 +104,7 @@ export default function ThemePage() {
     if (save) localStorage.setItem('background-blur', blurValue.toString());
   };
 
-_handleBrightnessChange = (value: number[], save = true) => {
+  const handleBrightnessChange = (value: number[], save = true) => {
     const [brightnessValue] = value;
     setBackgroundBrightness(brightnessValue);
     setCssVariable('--background-brightness', `${brightnessValue}%`);
