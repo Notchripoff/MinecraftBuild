@@ -30,11 +30,6 @@ export default async function BuildPage({ params }: BuildPageProps) {
             priority
             data-ai-hint="minecraft build"
           />
-          {build.status === 'pending' && (
-             <div className="absolute top-4 left-4">
-                <Badge className="bg-yellow-500 text-white">Pending Approval</Badge>
-             </div>
-          )}
         </div>
         <div className="p-6 md:p-8 space-y-6">
           <h1 className="text-3xl md:text-4xl font-bold font-headline">{build.name}</h1>

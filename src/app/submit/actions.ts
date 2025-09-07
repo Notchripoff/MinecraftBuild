@@ -49,7 +49,7 @@ export async function submitBuild(formData: FormData) {
     imageUrl,
     summary,
     tags,
-    status: 'pending',
+    status: 'approved',
   });
 
   // No need to redirect from here, the client-side router will handle it after the promise resolves.

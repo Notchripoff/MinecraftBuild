@@ -28,7 +28,6 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <nav className="hidden md:flex items-center gap-2">
               <NavLink href="/">Gallery</NavLink>
-              <NavLink href="/admin">Admin</NavLink>
             </nav>
             <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="/submit">Submit Build</Link>
